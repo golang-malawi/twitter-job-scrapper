@@ -1,15 +1,17 @@
 package main
 
 import (
-	"fmt"
+	// "fmt"
 
-	"github.com/preciousnyasulu/twitter-job-scrapper/twitter"
+	// "github.com/preciousnyasulu/twitter-job-scrapper/twitter"
+	"github.com/preciousnyasulu/twitter-job-scrapper/telegram"
 )
 
 func main() {
-	tweets := twitter.GetTweets()
+	// tweets := twitter.GetTweets()
+	// for _,value := range tweets{
+	// 	fmt.Println(value)
+	// }
 
-	for _,value := range tweets{
-		fmt.Println(value)
-	}
+	telegram.GetUpdate()
 }
