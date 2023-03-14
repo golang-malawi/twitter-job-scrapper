@@ -1,9 +1,10 @@
 package telegram
 
 import (
+	"fmt"
 	"os"
-	"strings"
 
+	"github.com/enescakir/emoji"
 	telegrambot "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/joho/godotenv"
 )
@@ -41,18 +42,18 @@ func GetUpdate() {
 		msg := telegrambot.NewMessage(update.Message.Chat.ID, "Rep: "+update.Message.Text)
 		switch update.Message.Command() {
 		case "start":
-			txt := "Welcome " + update.Message.From.FirstName + ", lets try to find you a job."
+			// txt := "Welcome " + update.Message.From.FirstName + ", lets try to find you a job " + emoji.Parse(":smiley:") + ".n\  Type some phrases that can help us find a job for you."
+			txt := fmt.Sprintf("welcome %s, lets try ti find you a job %s. \n\n%sType some phrases that can help us find a job for you e.g Developer, remote, malawi",update.Message.From.FirstName,emoji.Parse(":smiley:"),emoji.Parse(":writing_hand:"))
 			msg = telegrambot.NewMessage(update.Message.Chat.ID, txt)
-			
-			
+
 		default:
 			//validate text from user
-			if len(update.Message.Text) <  5{
-				msg = telegrambot.NewMessage(update.Message.Chat.ID, "That was not valid command, try again.")
+			if len(update.Message.Text) < 5 {
+				msg = telegrambot.NewMessage(update.Message.Chat.ID, "That was not a valid command, try again.")
 			}
-			case update.Message.Text{
-				case ""
-			}
+			// case update.Message.Text{
+			// case ""
+			// }
 		}
 		msg.ReplyToMessageID = update.Message.MessageID
 		if _, err := bot.Send(msg); err != nil {
