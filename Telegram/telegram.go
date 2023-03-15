@@ -50,7 +50,6 @@ func GetUpdate() {
 			txt := fmt.Sprintf("welcome %s, lets try ti find you a job %s. \n\n%sType some phrases that can help us find a job for you e.g Developer, remote, malawi",update.Message.From.FirstName,emoji.Parse(":smiley:"),emoji.Parse(":writing_hand:"))
 			
 			msg = telegrambot.NewMessage(update.Message.Chat.ID, txt)
-			msg.ReplyMarkup = searchButton
 
 		default:
 			usertext := update.Message.Text
