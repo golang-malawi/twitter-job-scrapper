@@ -3,11 +3,18 @@ package telegram
 import (
 	"fmt"
 	"os"
-
+	"github.com/preciousnyasulu/twitter-job-scrapper/twitter"
 	"github.com/enescakir/emoji"
 	telegrambot "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/joho/godotenv"
+	"strings"
 )
+
+// var searchButton = telegrambot.NewInlineKeyboardMarkup(
+// 	telegrambot.NewInlineKeyboardRow(
+// 		telegrambot.NewInlineKeyboardButtonData("Search " + emoji.Parse(":mag:"), "Search"),
+// 	),
+// )
 
 func GetUpdate() {
 	godotenv.Load(".env")
@@ -31,11 +38,8 @@ func GetUpdate() {
 	// Start polling Telegram for updates.
 	updates := bot.GetUpdatesChan(updateConfig)
 
-	// Let's go through each update that we're getting from Telegram.
 	for update := range updates {
-		// Telegram can send many types of updates depending on what your Bot
-		// is up to. We only want to look at messages for now, so we can
-		// discard any other updates.
+		
 		if update.Message == nil {
 			continue
 		}
@@ -44,22 +48,30 @@ func GetUpdate() {
 		case "start":
 			// txt := "Welcome " + update.Message.From.FirstName + ", lets try to find you a job " + emoji.Parse(":smiley:") + ".n\  Type some phrases that can help us find a job for you."
 			txt := fmt.Sprintf("welcome %s, lets try ti find you a job %s. \n\n%sType some phrases that can help us find a job for you e.g Developer, remote, malawi",update.Message.From.FirstName,emoji.Parse(":smiley:"),emoji.Parse(":writing_hand:"))
+			
 			msg = telegrambot.NewMessage(update.Message.Chat.ID, txt)
 
 		default:
+			usertext := update.Message.Text
 			//validate text from user
-			if len(update.Message.Text) < 5 {
+			if len(usertext) < 5 {
 				msg = telegrambot.NewMessage(update.Message.Chat.ID, "That was not a valid command, try again.")
 			}
-			// case update.Message.Text{
-			// case ""
-			// }
+
+			//send each found tweet to the user
+			tweets := twitter.GetTweets(usertext)
+			for _,value := range tweets{
+				result := strings.Trim(fmt.Sprintf("%s",value) , "{}")
+				msg = telegrambot.NewMessage(update.Message.Chat.ID,result)
+				msg.ReplyToMessageID = update.Message.MessageID
+				if _, err := bot.Send(msg); err != nil {
+					panic(err)
+				}
+			}
 		}
+
 		msg.ReplyToMessageID = update.Message.MessageID
 		if _, err := bot.Send(msg); err != nil {
-			// Note that panics are a bad way to handle errors. Telegram can
-			// have service outages or network errors, you should retry sending
-			// messages or more gracefully handle failures.
 			panic(err)
 		}
 	}
