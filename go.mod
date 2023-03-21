@@ -1,4 +1,4 @@
-module github.com/preciousnyasulu/twitter-job-scrapper
+module twitter-job-scrapper
 
 go 1.19
 

@@ -3,7 +3,7 @@ package telegram
 import (
 	"fmt"
 	"os"
-	"github.com/preciousnyasulu/twitter-job-scrapper/twitter"
+	"twitter-job-scrapper/twitter"
 	"github.com/enescakir/emoji"
 	telegrambot "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/joho/godotenv"
